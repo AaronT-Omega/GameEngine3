@@ -1,36 +1,54 @@
 
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameManager : Singleton<GameManager>
 {
-    private DateTime _sessionStartTime;
-    private DateTime _sessionEndTime;
+    public EnemySpawner badSpawner;
+    public FruitSpawner melonSpawner;
+
+    public int currentScore = 0;
+    public int currentHP = 3;
+    public float xRange = 15f;
+    
+
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI healthPoints;
+
+
     void Start()
     {
-        // Other possible functionality to add:
-        // - Save/Load player save
-        // - Trophies/rewards/achievements
-        _sessionStartTime = DateTime.Now;
-        Debug.Log(
-        "Game session start @: " + DateTime.Now);
+
+        Enemy enemy = badSpawner.SpawnEnemy();
+        Fruit fruit = melonSpawner.SpawnFruit();
+
+
+        enemy.Attack();
+        fruit.Reward();
     }
-    void OnApplicationQuit()
+
+    private void Update()
     {
-        _sessionEndTime = DateTime.Now;
-        TimeSpan timeDifference =
-        _sessionEndTime.Subtract(_sessionStartTime);
-        Debug.Log(
-        "Game session ended @: " + DateTime.Now);
-        Debug.Log(
-        "Game session lasted: " + timeDifference);
+        UpdateScoreDisplay();
+        UpdateHealthDisplay();
+
+        melonSpawner.randomPos = new Vector3(UnityEngine.Random.Range(-(xRange), xRange), UnityEngine.Random.Range(-5f, 0), 0);
     }
-    void OnGUI()
+
+
+    void UpdateScoreDisplay()
     {
-        if (GUILayout.Button("Next Scene"))
+        if (scoreText != null)
         {
-            SceneManager.LoadScene(
-            SceneManager.GetActiveScene().buildIndex + 1);
+            scoreText.text = "Score: " + currentScore.ToString();
+        }
+    }
+    void UpdateHealthDisplay()
+    {
+        if (healthPoints != null)
+        {
+            healthPoints.text = "HP: " + currentHP.ToString();
         }
     }
 }

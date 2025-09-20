@@ -7,27 +7,37 @@ public class PlayerMovement : MonoBehaviour
 {
 
     public float speed;
+    public float jump;
+    public LayerMask groundLayer;
     private Rigidbody2D rb2d;
+    private BoxCollider2D bc;
+
 
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        bc = GetComponent<BoxCollider2D>();
     }
 
     void Update()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
 
-        rb2d.velocity = new Vector2(moveHorizontal * speed, moveVertical * speed);
 
-        // Try out this delta time method??
-        //rb2d.transform.position += new Vector3(speed * Time.deltaTime, 0.0f, 0.0f);
+        rb2d.velocity = new Vector2(moveHorizontal * speed, rb2d.velocity.y);
+
+        if (Input.GetButtonDown("Jump") && isGrounded())
+        {
+            rb2d.velocity = new Vector2(rb2d.velocity.x, jump);
+        }
+
+      
     }
 
-    //FixedUpdate is called at a fixed interval and is independent of frame rate. Put physics code here.
-    void FixedUpdate()
+
+    bool isGrounded()
     {
+        return Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0f, Vector2.down, 1f, groundLayer);
     }
 }
 
