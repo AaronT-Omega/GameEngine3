@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
         rb2d.velocity = new Vector2(moveHorizontal * speed, rb2d.velocity.y);
 
-        if (Input.GetButtonDown("Jump") && isGrounded())
+        if (Input.GetButtonDown("Jump") && touchingLadder())
         {
             rb2d.velocity = new Vector2(rb2d.velocity.x, jump);
         }
@@ -35,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    bool isGrounded()
+    bool touchingLadder()
     {
         return Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0f, Vector2.down, 1f, groundLayer);
     }
